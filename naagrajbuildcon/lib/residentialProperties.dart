@@ -120,9 +120,20 @@ class _PropertiesListState extends State<PropertiesList> {
                       children: [
                         Expanded(
                           flex: 70,
-                          child: Image.asset(
-                            "assets/images/house_03.jpg",
-                            fit: BoxFit.fill,
+                          child: Container(
+                            child: Container(
+                              height: 210,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image:
+                                  // NetworkImage('https://adfest.in/naagrajbuildcon/api/v1/property?popular=1/data/image=?'+data[index]['image']),
+                                  NetworkImage(
+                                      'https://adfest.in/naagrajbuildcon/themes/basic/assets/img/' +
+                                          data[index]['image']),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         Expanded(
@@ -131,14 +142,12 @@ class _PropertiesListState extends State<PropertiesList> {
                             children: [
                               Expanded(
                                 flex: 30,
-                                child: Center(
-                                    child: Text(
+                                child: Text(
                                   data[index]["location"],
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                  style: TextStyle(                              fontSize: 18,
+                                fontWeight: FontWeight.bold,
                                   ),
-                                )),
+                                ),
                               ),
                               Expanded(
                                   flex: 25,

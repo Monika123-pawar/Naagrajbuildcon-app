@@ -31,7 +31,8 @@ class _ContactUsState extends State<ContactUs> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (BuildContext context) => Search()),
+            MaterialPageRoute(builder: (BuildContext context) => Search()
+            ),
           ),
         ),
       ),

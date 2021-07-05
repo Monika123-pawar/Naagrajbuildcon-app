@@ -19,10 +19,13 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String userName;
+  String lastName;
   String profileName;
   String phonenumber;
   String emailaddress;
   String password;
+  String type;
   Map data;
   File _image ;
   final _formKey = GlobalKey<FormState>();
@@ -106,109 +109,109 @@ class _ProfileState extends State<Profile> {
                 autovalidate: _autoValidate,
                 child: Column(
                   children: <Widget>[
-                    new Container(
-                      height: 150.0,
-                      color: Colors.white,
-                      child: new Column(
-                        children: <Widget>[
-                          // Padding(
-                          //   padding: EdgeInsets.only(top: 20.0),
-                          //   child: new Stack(fit: StackFit.loose, children: <Widget>[
-                          //     new Row(
-                          //       crossAxisAlignment: CrossAxisAlignment.center,
-                          //       mainAxisAlignment: MainAxisAlignment.center,
-                          //       children: <Widget>[
-                          //         new Container(
-                          //             width: 140.0,
-                          //             height: 140.0,
-                          //             decoration: new BoxDecoration(
-                          //               shape: BoxShape.circle,
-                          //               image: new DecorationImage(
-                          //                 image: new ExactAssetImage(
-                          //                     'assets/images/owner.jpg'),
-                          //                 fit: BoxFit.cover,
-                          //               ),
-                          //             ),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //     // Container(
-                          //     //   child: ProfileIamge(),
-                          //     // ),
-                          //     Padding(
-                          //         padding: EdgeInsets.only(top: 90.0, right: 100.0),
-                          //         child: new Row(
-                          //           mainAxisAlignment: MainAxisAlignment.center,
-                          //           children: <Widget>[
-                          //             InkWell(
-                          //                  onTap: (){
-                          //                    // Navigator.of(context).pushReplacement(
-                          //                    //     MaterialPageRoute(builder: (BuildContext context) =>  ProfileIamge()));
-                          //
-                          //                },
-                          //               child: new CircleAvatar(
-                          //                 backgroundColor: Colors.red,
-                          //                 radius: 25.0,
-                          //                 child: new IconButton(
-                          //                   onPressed: (){
-                          //                     // Navigator.of(context).pushReplacement(
-                          //                     //     MaterialPageRoute(builder: (BuildContext context) =>  ProfileIamge()));
-                          //
-                          //                     print("clicked icon");
-                          //                   },
-                          //                   icon: Icon(
-                          //                     Icons.camera_alt,
-                          //                     color: Colors.white,
-                          //                   ),
-                          //                 ),
-                          //               ),
-                          //             )
-                          //           ],
-                          //         )),
-                          //   ]),
-                          // )
-                          Padding(
-                            padding: EdgeInsets.only(top: 20.0),
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: () {
-                                  _showPicker(context);
-                                },
-                                child: CircleAvatar(
-                                  radius: 55,
-                                  backgroundColor: Colors.brown,
-                                  child: _image != null
-                                      ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child: Image.file(
-                                      _image,
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.fitHeight,
-                                    ),
-                                  )
-                                      : Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey[200],
-                                        borderRadius: BorderRadius.circular(50)),
-                                    width: 100,
-                                    height: 100,
-                                    child: Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.grey[800],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // new Container(
+                    //   height: 150.0,
+                    //   color: Colors.white,
+                    //   child: new Column(
+                    //     children: <Widget>[
+                    //       // Padding(
+                    //       //   padding: EdgeInsets.only(top: 20.0),
+                    //       //   child: new Stack(fit: StackFit.loose, children: <Widget>[
+                    //       //     new Row(
+                    //       //       crossAxisAlignment: CrossAxisAlignment.center,
+                    //       //       mainAxisAlignment: MainAxisAlignment.center,
+                    //       //       children: <Widget>[
+                    //       //         new Container(
+                    //       //             width: 140.0,
+                    //       //             height: 140.0,
+                    //       //             decoration: new BoxDecoration(
+                    //       //               shape: BoxShape.circle,
+                    //       //               image: new DecorationImage(
+                    //       //                 image: new ExactAssetImage(
+                    //       //                     'assets/images/owner.jpg'),
+                    //       //                 fit: BoxFit.cover,
+                    //       //               ),
+                    //       //             ),
+                    //       //         ),
+                    //       //       ],
+                    //       //     ),
+                    //       //     // Container(
+                    //       //     //   child: ProfileIamge(),
+                    //       //     // ),
+                    //       //     Padding(
+                    //       //         padding: EdgeInsets.only(top: 90.0, right: 100.0),
+                    //       //         child: new Row(
+                    //       //           mainAxisAlignment: MainAxisAlignment.center,
+                    //       //           children: <Widget>[
+                    //       //             InkWell(
+                    //       //                  onTap: (){
+                    //       //                    // Navigator.of(context).pushReplacement(
+                    //       //                    //     MaterialPageRoute(builder: (BuildContext context) =>  ProfileIamge()));
+                    //       //
+                    //       //                },
+                    //       //               child: new CircleAvatar(
+                    //       //                 backgroundColor: Colors.red,
+                    //       //                 radius: 25.0,
+                    //       //                 child: new IconButton(
+                    //       //                   onPressed: (){
+                    //       //                     // Navigator.of(context).pushReplacement(
+                    //       //                     //     MaterialPageRoute(builder: (BuildContext context) =>  ProfileIamge()));
+                    //       //
+                    //       //                     print("clicked icon");
+                    //       //                   },
+                    //       //                   icon: Icon(
+                    //       //                     Icons.camera_alt,
+                    //       //                     color: Colors.white,
+                    //       //                   ),
+                    //       //                 ),
+                    //       //               ),
+                    //       //             )
+                    //       //           ],
+                    //       //         )),
+                    //       //   ]),
+                    //       // )
+                    //       // Padding(
+                    //       //   padding: EdgeInsets.only(top: 20.0),
+                    //       //   child: Center(
+                    //       //     child: GestureDetector(
+                    //       //       onTap: () {
+                    //       //         _showPicker(context);
+                    //       //       },
+                    //       //       child: CircleAvatar(
+                    //       //         radius: 55,
+                    //       //         backgroundColor: Colors.brown,
+                    //       //         child: _image != null
+                    //       //             ? ClipRRect(
+                    //       //           borderRadius: BorderRadius.circular(50),
+                    //       //           child: Image.file(
+                    //       //             _image,
+                    //       //             width: 100,
+                    //       //             height: 100,
+                    //       //             fit: BoxFit.fitHeight,
+                    //       //           ),
+                    //       //         )
+                    //       //             : Container(
+                    //       //           decoration: BoxDecoration(
+                    //       //               color: Colors.grey[200],
+                    //       //               borderRadius: BorderRadius.circular(50)),
+                    //       //           width: 100,
+                    //       //           height: 100,
+                    //       //           child: Icon(
+                    //       //             Icons.camera_alt,
+                    //       //             color: Colors.grey[800],
+                    //       //           ),
+                    //       //         ),
+                    //       //       ),
+                    //       //     ),
+                    //       //   ),
+                    //       // ),
+                    //     ],
+                    //   ),
+                    // ),
                     new Container(
                       color: Color(0xffFFFFFF),
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: 25.0),
+                        padding: EdgeInsets.only(bottom: 25.0 ,top:35.0),
                         child: new Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -296,7 +299,7 @@ class _ProfileState extends State<Profile> {
                                           return null;
                                         },
                                         onSaved: (String val) {
-                                          profileName = val;
+                                          lastName = val;
                                         },
                                       ),
                                     ),
@@ -341,7 +344,7 @@ class _ProfileState extends State<Profile> {
                                           return null;
                                         },
                                         onSaved: (String val) {
-                                          profileName = val;
+                                          emailaddress = val;
                                         },
                                       ),
                                     ),
@@ -390,7 +393,7 @@ class _ProfileState extends State<Profile> {
                                           return null;
                                         },
                                         onSaved: (String val) {
-                                          profileName = val;
+                                          phonenumber = val;
                                         },
                                       ),
                                     ),
@@ -461,13 +464,13 @@ class _ProfileState extends State<Profile> {
   Future<void> profileUser() async {
     String url = 'https://adfest.in/naagrajbuildcon/api/v1/user';
     http. Response response = await put(url, body: {
-      // 'username' : 'monika4',
-      // 'f_name': 'monika',
-      // 'l_name': 'pawar',
-      // 'mobile':'9022277109',
-      // 'email': 'monika.pawar.we@gmail.com',
-      // 'password':'12345678',
-      // 'role_id':'3',
+      'username' : 'monika',
+      'f_name': profileName,
+      'l_name': lastName,
+      'mobile':phonenumber,
+      'email': emailaddress,
+      'password':'12345678',
+      'role_id':'3',
     });
     print(response.body);
     data = jsonDecode(response.body);

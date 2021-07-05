@@ -1,126 +1,88 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class Notification extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:naagrajbuildcon/search.dart';
+
+class NotificationPage extends StatefulWidget {
+  final String tokens;
+  const NotificationPage(this.tokens);
   @override
-  _NotificationState createState() => _NotificationState();
+  _NotificationPageState createState() => _NotificationPageState();
 }
 
-class _NotificationState extends State<Notification> {
+class _NotificationPageState extends State<NotificationPage> {
   ScrollController _scrollController;
   bool _isOnTop = true;
 
-  var data;
+  List data;
   var dataId;
 
+  Future<String> getData() async {
+    var response = await http.get(
+        Uri.encodeFull(
+            "https://adfest.in/naagrajbuildcon/api/v1/notifications?access_token=doJTMpvz6ycLamN7Wn7gfFtnffUe7E"),
+        headers: {"Accept": "application/json"});
+    data = json.decode(response.body)['data'];
+    print(data);
+    // this.setState(() {
+    //   data = json.decode(response.body)['data'];
+    //   print(data);
+    // });
+    return "Something went wrong. Please check again";
+  }
 
   @override
   void initState() {
     super.initState();
-    // getData();
-    _scrollController = ScrollController();
+    this.getData();
+    // setState(() {});
   }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  _scrollToTop() {
-    _scrollController.animateTo(_scrollController.position.minScrollExtent,
-        duration: Duration(milliseconds: 1000), curve: Curves.easeIn);
-    setState(() => _isOnTop = true);
-  }
-
-  _scrollToBottom() {
-    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 1000), curve: Curves.easeOut);
-    setState(() => _isOnTop = false);
-  }
-
-
-  // Future getData() async {
-  //   try {
-  //     var res = await http.get(config.domainName);
-  //     if(res.statusCode==200) {
-  //       return data = jsonDecode(res.body);
-  //       setState(() {});
-  //     }
-  //   }
-  //   catch(e){
-  //     throw ("Something went wrong. Please check again");
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () =>
+              // Navigator.pop(context),.then((value) => setState(() {}))
+              Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (BuildContext context) => Search()
+            ),
+    ),
+
+        ),
         title:Text("Notification", style:TextStyle(fontSize: 20.0)),
       ),
-      body:new FutureBuilder(
-        // future: getData(),
-        initialData: "Fetching Data",
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return Center(
-              child: Text("Fetching Data",style: TextStyle(fontSize: 20),),
-            );
-          }
-          if (snapshot.hasData) {
-            var data = snapshot.data;
-            return new SingleChildScrollView(
-              controller: _scrollController,
-              child:  Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Center(
-                    child: data != null?
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemBuilder: (context,index){
-                        return
-                          Card(
-                            elevation: 8,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ListTile(
-                                title:Text("${data[index]["id"]}: "+data[index]["title"]) ,
-                                // subtitle: Text("Id:${data[index]["id"]}"),
-                                leading: Icon(Icons.call_to_action),
-                                onTap: (){
-                                  // Navigator.push(
-                                  //         context,
-                                  //         MaterialPageRoute(
-                                  //             builder: (context)=>())
-                                  //     );
-                                },
-                              ),
-                            ),
-                          );
-                      },
-                      itemCount:data.length ,
-                    ):
-                    Center(child: CircularProgressIndicator(),)
+      body: new SingleChildScrollView(
+        scrollDirection: Axis.vertical,//.horizontal
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: new   Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child:data!=null? ListTile(
+                title:Text(data[0]["title"]) ,
+                // subtitle: Text("Id:${data[index]["id"]}"),
+                leading: Icon(Icons.call_to_action),
+                onTap: (){
+                  // Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context)=>())
+                  //     );
+                },
+              ):Center(child: Text('Your notification box is empty',style:TextStyle(color: Colors.black,fontSize: 25),)),
+            ),
+          ),
+        ),
+      ),
 
-                ),
-              ),
-            );
-          }
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString(),style:TextStyle(fontSize: 30),);
-          }
-          return Center(
-            child: new CircularProgressIndicator(),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _isOnTop ? _scrollToBottom : _scrollToTop,
-        child: Icon(_isOnTop ? Icons.arrow_downward : Icons.arrow_upward),
-      ),
-    );
+
+       );
   }
 }

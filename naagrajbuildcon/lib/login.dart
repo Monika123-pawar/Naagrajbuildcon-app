@@ -19,7 +19,7 @@ class _LoginState extends State<Login> {
   bool changedButton = false;
   final _formKey=GlobalKey<FormState>();
   Map data;
-Map tokens;
+String tokens;
   moveToHome(BuildContext context) async{
     if(_formKey.currentState.validate()) {
       setState(() {
@@ -49,15 +49,28 @@ Map tokens;
   }
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      child: SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () =>
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (BuildContext context) => Search(tokens:tokens)),
+              ),),
+        title: Text('Login',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20.0,
+                // fontFamily: 'sans-serif-light',
+                color: Colors.white)),
+      ),
+      body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top:80.0),
+                padding: const EdgeInsets.only(top:30.0),
                 child: Image.asset(
                   "assets/images/NAAGRAJ_Stationary-08.png",
                   fit: BoxFit.cover,
@@ -65,7 +78,7 @@ Map tokens;
                 ),
               ),
               SizedBox(
-                height: 70.0,
+                height: 50.0,
               ),
               Text(
                 "Welcome $user_Name",
@@ -123,7 +136,7 @@ Map tokens;
                       height: 20.0,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left:170.0),
+                      padding: const EdgeInsets.only(left:130.0),
                       child: InkWell(
                         onTap:(){
                           Navigator.of(context).pushReplacement(

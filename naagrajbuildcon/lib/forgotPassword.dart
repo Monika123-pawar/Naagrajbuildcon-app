@@ -32,7 +32,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   }
   Future<void> forgotPassword() async {
-
+    print(user_Name);
     String url = 'https://adfest.in/naagrajbuildcon/api/v1/password';
     http. Response response = await post(url, body: {
       'username' : user_Name,

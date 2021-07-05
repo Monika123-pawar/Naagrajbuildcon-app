@@ -128,32 +128,6 @@ class _FilterPageState extends State<FilterPage> {
                         value: _selectedLocation,
                       ),
 
-                      // DropdownButton<String>(
-                      //   hint: Text("Location"),
-                      //   value: _selectedLocation,
-                      //   items: <String>[
-                      //     'Panvel',
-                      //     'Andheri west ',
-                      //     'Khar ghar',
-                      //     'Belapur'
-                      //   ].map((String value) {
-                      //     return new DropdownMenuItem<String>(
-                      //       value: value,
-                      //       child: new Text(
-                      //         value,
-                      //         style: TextStyle(
-                      //           fontSize: 16,
-                      //           fontWeight: FontWeight.bold,
-                      //         ),
-                      //       ),
-                      //     );
-                      //   }).toList(),
-                      //   onChanged: (String val) {
-                      //     setState(() {
-                      //       _selectedLocation = val;
-                      //     });
-                      //   },
-                      // ),
                       SizedBox(
                         width: 10,
                       ),
@@ -188,48 +162,48 @@ class _FilterPageState extends State<FilterPage> {
                       SizedBox(
                         width: 10,
                       ),
-                      DropdownButton(
-                        items: budget.map((data) {
-                          return new DropdownMenuItem(
-                            child: new Text(data['subtext1']+"-"+data['subtext2']),
-                            value: (data['subtext1'])+"-"+(data['subtext2']),
-                          );
-                        }).toList(),
-                        onChanged: (newVal) {
-                          setState(() {
-                            // print('newval'+newVal.toString());
-                            _selectedBudget = newVal.toString();
-                          });
-                        },
-                        value: _selectedBudget,
-                      ),
-                      // DropdownButton<String>(
-                      //   hint: Text("Property Budget"),
-                      //   value: _selectedBudget,
-                      //   items: <String>[
-                      //     '3300000-100000000',
-                      //     '1000000-3300000',
-                      //     '20000-100000',
-                      //     '100-10',
-                      //     '1000-100'
-                      //   ].map((String value) {
-                      //     return new DropdownMenuItem<String>(
-                      //       value: value,
-                      //       child: new Text(
-                      //         value,
-                      //         style: TextStyle(
-                      //           fontSize: 16,
-                      //           fontWeight: FontWeight.bold,
-                      //         ),
-                      //       ),
+                      // DropdownButton(
+                      //   items: budget.map((data) {
+                      //     return new DropdownMenuItem(
+                      //       child: new Text(data['subtext1']+"-"+data['subtext2']),
+                      //       value: (data['subtext1'])+"-"+(data['subtext2']),
                       //     );
                       //   }).toList(),
-                      //   onChanged: (String val) {
+                      //   onChanged: (newVal) {
                       //     setState(() {
-                      //       _selectedBudget = val;
+                      //       // print('newval'+newVal.toString());
+                      //       _selectedBudget = newVal.toString();
                       //     });
                       //   },
+                      //   value: _selectedBudget,
                       // ),
+                      DropdownButton<String>(
+                        hint: Text("Property Budget"),
+                        value: _selectedBudget,
+                        items: <String>[
+                          '3300000-100000000',
+                          '1000000-3300000',
+                          '20000-100000',
+                          '100-10',
+                          '1000-100'
+                        ].map((String value) {
+                          return new DropdownMenuItem<String>(
+                            value: value,
+                            child: new Text(
+                              value,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (String val) {
+                          setState(() {
+                            _selectedBudget = val;
+                          });
+                        },
+                      ),
                       SizedBox(
                         width: 8,
                       ),

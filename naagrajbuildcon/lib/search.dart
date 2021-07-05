@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:naagrajbuildcon/aboutUs.dart';
@@ -7,6 +8,7 @@ import 'package:naagrajbuildcon/data.dart';
 import 'package:naagrajbuildcon/filter.dart';
 import 'package:naagrajbuildcon/detail.dart';
 import 'package:naagrajbuildcon/filterPage.dart';
+import 'package:naagrajbuildcon/notification.dart';
 import 'package:naagrajbuildcon/profile.dart';
 import 'package:naagrajbuildcon/residentialProperties.dart';
 import 'package:naagrajbuildcon/searchPage.dart';
@@ -15,29 +17,52 @@ import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+// import 'package:network_info_plus/network_info_plus.dart';
 
+import 'connectionStatusSingleton.dart';
 import 'contactUs.dart';
+import 'login.dart';
 import 'messagePage.dart';
 
 class Search extends StatefulWidget {
+  final String tokens;
+  const Search({Key key, this.tokens}):super(key: key);
   @override
   _SearchState createState() => _SearchState();
 }
 
 class _SearchState extends State<Search> {
+  ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+
   List data;
 String type='';
   String contact_no;
+
+  var wifiBSSID;
+  var wifiIP;
+  var wifiName;
+  bool iswificonnected = false;
+  bool isInternetOn = true;
+
+  String get tokens => null;//this.tokens
 
   Future<String> getData() async {
     var response = await http.get(
         Uri.encodeFull(
             "https://adfest.in/naagrajbuildcon/api/v1/property?popular=1"),
         headers: {"Accept": "application/json"});
-
-    this.setState(() {
-      data = json.decode(response.body)['data'];
-    });
+    data = json.decode(response.body)['data'];
+    //     print('data');
+        setState((){});
+    // this.setState(() {
+    //   if(response.body.isNotEmpty) {
+    //     data = json.decode(response.body)['data'];
+    //     print('data');
+    //   }else{
+    //     return "data is not loaded";
+    //   }
+    //
+    // });
     return "Success!";
   }
   Future<String> makingCall() async {
@@ -47,9 +72,10 @@ String type='';
         headers: {"Accept": "application/json"});
 
     this.setState(() {
-      data = json.decode(response.body)['data'];
-    contact_no=data[5]['s_value'];
-
+      if(response.body.isNotEmpty) {
+        data = json.decode(response.body)['data'];
+        contact_no=data[5]['s_value'];
+      }
     });
     // print(data[5]['s_value']);
     return "Success!";
@@ -57,14 +83,18 @@ String type='';
   @override
   void initState() {
     super.initState();
+    // connectionStatus.initialize();
+    GetConnect();
     this.getData();
     this.makingCall();
+
   }
 
   List<Property> properties = getPropertyList();
 
   @override
   Widget build(BuildContext context) {
+    print(data[0]['tokens']);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -73,8 +103,38 @@ String type='';
           //   fit: BoxFit.contain,
           //   height: 72,
           // ),
+        actions: [
+          IconButton(icon:  Icon(
+            Icons.login,
+            color: Colors.white,
+            size: 25,
+          ), onPressed: (){
+
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (BuildContext context) => Login()));
+          }),
+           // Text(
+           //    "Login",
+           //    style: TextStyle(
+           //      fontSize: 18,
+           //      fontWeight: FontWeight.bold,
+           //      color: Colors.white,
+           //    ),
+           //  ),
+
+          IconButton(icon:  Icon(
+            Icons.notifications_none,
+            color: Colors.white,
+            size: 25,
+          ), onPressed: (){
+
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (BuildContext context) => NotificationPage(tokens)));
+          })
+        ],
           ),
-      body: Column(
+      body:  isInternetOn
+          ? Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Padding(
@@ -214,7 +274,7 @@ String type='';
           //     ],
           //   ),
           // ),
-FilterPage(),
+          FilterPage(),
           Padding(
             padding: EdgeInsets.only(right: 24, left: 24, top: 24, bottom: 12),
             child: Row(
@@ -232,12 +292,7 @@ FilterPage(),
 
           Expanded(
             flex: 5,
-            // child:  ListView(
-            //   physics: BouncingScrollPhysics(),
-            //   scrollDirection: Axis.vertical,
-            //   children: buildProperties(),
-            // ),
-            child: new ListView.builder(
+            child:data!=null? new ListView.builder(
               physics: BouncingScrollPhysics(),
               scrollDirection: Axis.vertical,
               itemCount: data == null ? 0 : data.length,
@@ -248,7 +303,7 @@ FilterPage(),
                 double pr = double.parse(price);
                 FlutterMoneyFormatter fmf = FlutterMoneyFormatter(amount: pr);
                 MoneyFormatterOutput fo = fmf.output;
-                return GestureDetector(
+                return  GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
@@ -270,10 +325,10 @@ FilterPage(),
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image:
-                              // NetworkImage('https://adfest.in/naagrajbuildcon/api/v1/property?popular=1/data/image=?'+data[index]['image']),
-                              NetworkImage(
-                                  'https://adfest.in/naagrajbuildcon/themes/basic/assets/img/' +
-                                      data[index]['image']),
+                          // NetworkImage('https://adfest.in/naagrajbuildcon/api/v1/property?popular=1/data/image=?'+data[index]['image']),
+                          NetworkImage(
+                              'https://adfest.in/naagrajbuildcon/themes/basic/assets/img/' +
+                                  data[index]['image']),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -303,6 +358,7 @@ FilterPage(),
                               padding: EdgeInsets.symmetric(
                                 vertical: 4,
                               ),
+
                               child: Center(
                                 child: Text(
                                   "FOR " + data[index]['sub_category'],
@@ -321,7 +377,7 @@ FilterPage(),
                               children: [
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       data[index]['title'],
@@ -361,7 +417,7 @@ FilterPage(),
                                 ),
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [
@@ -459,7 +515,7 @@ FilterPage(),
                   ),
                 );
               },
-            ),
+            ):Text('Loading'),
           ),
 
           Expanded(
@@ -467,7 +523,7 @@ FilterPage(),
             child: ResidentialProperties(),
           ),
         ],
-      ),
+      ): buildAlertDialog(),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -570,7 +626,7 @@ FilterPage(),
             IconButton(
               onPressed: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) => MessagePage()));
+                    builder: (BuildContext context) => ContactUs()));
               },
               icon: Icon(
                 Icons.send,
@@ -654,7 +710,7 @@ FilterPage(),
   // }
 
   Widget buildProperty(List data, int index) {
-    print(index);
+
     return GestureDetector(
       onTap: () {
         // Navigator.push(
@@ -911,7 +967,61 @@ FilterPage(),
       });
       return "Success!";
     }
+  AlertDialog buildAlertDialog() {
+    return AlertDialog(
+      title: Text(
+        "You are not Connected to Internet",
+        style: TextStyle(fontStyle: FontStyle.italic),
+      ),
+    );
+  }
+  Center ShowWifi() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+              " Your are connected to ${iswificonnected ? "WIFI" : "MOBILE DATA"}"),
+          // Text(iswificonnected ? "$wifiBSSID" : "Not Wifi"),
+          // Text("$wifiIP"),
+          // Text("$wifiName")
+        ],
+      ),
+    );
+  }
+  Center ShowMobile() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(" Your are Connected to  MOBILE DATA"),
+        ],
+      ),
+    );
+  }
+  void GetConnect() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        isInternetOn = false;
+      });
+    } else if (connectivityResult == ConnectivityResult.mobile) {
 
+      iswificonnected = false;
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+
+      iswificonnected = true;
+      // setState(() async {
+      //   // wifiBSSID = await (Connectivity().getWifiBSSID());
+      //   // wifiIP = await (Connectivity().getWifiIP());
+      //   // wifiName = await (Connectivity().getWifiName());
+      //   //  wifiBSSID = await (NetworkInfo().getWifiBSSID());
+      //   //  wifiIP = await (NetworkInfo().getWifiIP());
+      //   //  wifiName = await (NetworkInfo().getWifiName());
+      // });
+
+    }
+  }
    }
 class NumberFormatter{
   NumberFormatter(String price);
